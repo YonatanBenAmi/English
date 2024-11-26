@@ -12,6 +12,13 @@ body {
     padding: 15px;
     line-height: 1.6;
     text-align: center;
+    overflow: hidden; /* זה יסתיר את סרגל הגלילה */
+    -ms-overflow-style: none;  /* הסרת סרגל הגלילה ב-IE */
+    scrollbar-width: none;  /* הסרת סרגל הגלילה ב-Firefox */
+}
+
+body::-webkit-scrollbar {
+    display: none;  /* הסרת סרגל הגלילה ב-Chrome/Edge/Safari */
 }
 
 h1 {
@@ -92,6 +99,11 @@ h1 {
     width: 90%;
     max-height: 80%;
     overflow-y: auto;
+    overflow: scroll; /* מאפשר גלילה */
+}
+
+ .modal-content::-webkit-scrollbar {
+    display: none;
 }
 
 .close-modal {

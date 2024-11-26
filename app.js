@@ -409,7 +409,7 @@ const sentenceData = {
             }
         }
     ],
-    C1 : [
+    C1: [
         {
             "base": "I have been analyzing the data to identify hidden trends.",
             "tenses": {
@@ -583,7 +583,7 @@ const sentenceData = {
             }
         }
     ]
-    
+
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -678,6 +678,17 @@ document.addEventListener('DOMContentLoaded', () => {
         tensesModal.style.display = 'flex';
     }
 
+    // function closeTensesModal() {
+    //     tensesModal.style.display = 'none';
+    // }
+
+    // // Close modal when clicking outside
+    // tensesModal.addEventListener('click', (e) => {
+    //     if (e.target === tensesModal) {
+    //         closeTensesModal();
+    //     }
+    // });
+
     function closeTensesModal() {
         tensesModal.style.display = 'none';
     }
@@ -688,4 +699,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeTensesModal();
         }
     });
+
+    // Close modal when clicking on the X
+    document.querySelector('.close-modal').addEventListener('click', closeTensesModal);
 });
