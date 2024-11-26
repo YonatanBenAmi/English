@@ -1,0 +1,802 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>English Sentence Explorer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            text-align: center;
+        }
+        #level-selection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .level-button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #f4f4f4;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .level-button:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.05);
+        }
+        #sentences-container {
+            display: none;
+        }
+        .proficiency-level {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .sentence-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .sentence {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            word-wrap: break-word;
+        }
+        .sentence:hover {
+            background-color: #e0e0e0;
+        }
+        #tenses-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+        .close-modal {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        #back-to-levels {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>English Sentence Explorer</h1>
+    
+    <div id="level-selection">
+        <button class="level-button" data-level="A1">A1</button>
+        <button class="level-button" data-level="A2">A2</button>
+        <button class="level-button" data-level="B1">B1</button>
+        <button class="level-button" data-level="B2">B2</button>
+        <button class="level-button" data-level="C1">C1</button>
+        <button class="level-button" data-level="C2">C2</button>
+    </div>
+    
+    <button id="back-to-levels" style="display:none;">Back to Level Selection</button>
+    
+    <div id="sentences-container"></div>
+    
+    <div id="tenses-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeTensesModal()">×</span>
+            <h2 id="modal-sentence-original"></h2>
+            <div id="tenses-content"></div>
+        </div>
+    </div>
+
+    <script>
+        const sentenceData = {
+            A1: [
+                {
+                    base: "I go to school.",
+                    tenses: generateTenses("I go to school.", "school")
+                },
+                {
+                    base: "She likes pizza.",
+                    tenses: generateTenses("She likes pizza.", "pizza")
+                },
+                {
+                    base: "I have a cat.",
+                    tenses: generateTenses("I have a cat.", "cat")
+                },
+                {
+                    base: "He plays football.",
+                    tenses: generateTenses("He plays football.", "football")
+                },
+                {
+                    base: "They live in a big house.",
+                    tenses: generateTenses("They live in a big house.", "house")
+                }
+            ],
+            A2: [
+                {
+                    base: "They study English every day.",
+                    tenses: generateTenses("They study English every day.", "English")
+                },
+                {
+                    base: "My friend works in a restaurant.",
+                    tenses: generateTenses("My friend works in a restaurant.", "restaurant")
+                },
+                {
+                    base: "I can speak two languages.",
+                    tenses: generateTenses("I can speak two languages.", "languages")
+                },
+                {
+                    base: "We travel every summer.",
+                    tenses: generateTenses("We travel every summer.", "summer")
+                },
+                {
+                    base: "She wants to learn dancing.",
+                    tenses: generateTenses("She wants to learn dancing.", "dancing")
+                }
+            ],
+            B1: [
+                {
+                    base: "We have visited Paris twice.",
+                    tenses: generateTenses("We visit Paris twice.", "Paris")
+                },
+                {
+                    base: "I enjoy reading books in the evening.",
+                    tenses: generateTenses("I enjoy reading books in the evening.", "books")
+                },
+                {
+                    base: "They are planning a big party.",
+                    tenses: generateTenses("They plan a big party.", "party")
+                },
+                {
+                    base: "She speaks three languages fluently.",
+                    tenses: generateTenses("She speaks three languages fluently.", "languages")
+                },
+                {
+                    base: "We are thinking about buying a new car.",
+                    tenses: generateTenses("We think about buying a new car.", "car")
+                }
+            ],
+            B2: [
+                {
+                    base: "If I had studied harder, I would have passed the exam.",
+                    tenses: generateTenses("If I study harder, I pass the exam.", "exam")
+                },
+                {
+                    base: "Despite the challenges, she managed to complete the project.",
+                    tenses: generateTenses("Despite the challenges, she manages to complete the project.", "project")
+                },
+                {
+                    base: "The team would have won if they had trained more.",
+                    tenses: generateTenses("The team will win if they train more.", "team")
+                },
+                {
+                    base: "She might have been working on a solution.",
+                    tenses: generateTenses("She works on a solution.", "solution")
+                },
+                {
+                    base: "They could have traveled the world by now.",
+                    tenses: generateTenses("They travel the world.", "world")
+                }
+            ],
+            C1: [
+                {
+                    base: "Despite the challenging circumstances, she managed to complete the project.",
+                    tenses: generateTenses("Despite challenging circumstances, she manages to complete projects.", "projects")
+                },
+                {
+                    base: "The intricate details of the proposal were meticulously examined.",
+                    tenses: generateTenses("The intricate details of the proposal are meticulously examined.", "proposal")
+                },
+                {
+                    base: "Her innovative approach revolutionized the entire industry.",
+                    tenses: generateTenses("Her innovative approach revolutionizes the entire industry.", "industry")
+                },
+                {
+                    base: "The complex negotiations continued throughout the night.",
+                    tenses: generateTenses("The complex negotiations continue throughout the night.", "negotiations")
+                },
+                {
+                    base: "Unprecedented challenges tested their resilience.",
+                    tenses: generateTenses("Unprecedented challenges test their resilience.", "challenges")
+                }
+            ],
+            C2: [
+                {
+                    base: "The intricacies of linguistic nuances often elude even advanced learners.",
+                    tenses: generateTenses("The intricacies of linguistic nuances often elude advanced learners.", "nuances")
+                },
+                {
+                    base: "Philosophical discourse transcends mere linguistic constructs.",
+                    tenses: generateTenses("Philosophical discourse transcends mere linguistic constructs.", "discourse")
+                },
+                {
+                    base: "Paradigmatic shifts in scientific understanding challenge established epistemologies.",
+                    tenses: generateTenses("Paradigmatic shifts challenge established epistemologies.", "shifts")
+                },
+                {
+                    base: "Her eloquent articulation synthesized complex theoretical frameworks.",
+                    tenses: generateTenses("Her articulation synthesizes complex theoretical frameworks.", "articulation")
+                },
+                {
+                    base: "Epistemological boundaries blur in interdisciplinary research.",
+                    tenses: generateTenses("Epistemological boundaries blur in interdisciplinary research.", "boundaries")
+                }
+            ]
+        };
+
+        // Tense generation function
+        function generateTenses(baseSentence, keyword) {
+            const tenses = {
+                "Simple Present": baseSentence,
+                "Simple Past": baseSentence.replace(keyword, keyword.endsWith('s') ? keyword.slice(0, -1) : keyword),
+                "Simple Future": `${baseSentence.split(' ')[0]} will ${baseSentence.split(' ').slice(1).join(' ')}`,
+                "Present Continuous": baseSentence.replace(keyword, `is ${keyword}`),
+                "Past Continuous": baseSentence.replace(keyword, `was ${keyword}`),
+                "Future Continuous": baseSentence.replace(keyword, `will be ${keyword}`),
+                "Present Perfect": `${baseSentence.split(' ')[0]} has ${baseSentence.split(' ').slice(1).join(' ')}`,
+                "Past Perfect": `${baseSentence.split(' ')[0]} had ${baseSentence.split(' ').slice(1).join(' ')}`,
+                "Future Perfect": `${baseSentence.split(' ')[0]} will have ${baseSentence.split(' ').slice(1).join(' ')}`,
+                "Present Perfect Continuous": `${baseSentence.split(' ')[0]} has been ${baseSentence.split(' ').slice(1).join(' ')}`,
+                "Past Perfect Continuous": `${baseSentence.split(' ')[0]} had been ${baseSentence.split(' ').slice(1).join(' ')}`,
+                "Future Perfect Continuous": `${baseSentence.split(' ')[0]} will have been ${baseSentence.split(' ').slice(1).join(' ')}`
+            };
+            return tenses;
+        }
+
+        // Level Selection
+        const levelButtons = document.querySelectorAll('.level-button');
+        const sentencesContainer = document.getElementById('sentences-container');
+        const levelSelection = document.getElementById('level-selection');
+        const backToLevelsButton = document.getElementById('back-to-levels');
+
+        levelButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const selectedLevel = button.dataset.level;
+                renderSentences(selectedLevel);
+                levelSelection.style.display = 'none';
+                sentencesContainer.style.display = 'block';
+                backToLevelsButton.style.display = 'block';
+            });
+        });
+
+        backToLevelsButton.addEventListener('click', () => {
+            levelSelection.style.display = 'flex';
+            sentencesContainer.style.display = 'none';
+            backToLevelsButton.style.display = 'none';
+            sentencesContainer.innerHTML = ''; // Clear previous level's sentences
+        });
+
+        function renderSentences(level) {
+            const container = document.getElementById('sentences-container');
+            container.innerHTML = ''; // Clear previous content
+            
+            const levelDiv = document.createElement('div');
+            levelDiv.className = 'proficiency-level';
+            
+            const levelTitle = document.createElement('h2');
+            levelTitle.textContent = `Level ${level}`;
+            levelDiv.appendChild(levelTitle);
+            
+            const sentenceListDiv = document.createElement('div');
+            sentenceListDiv.className = 'sentence-list';
+            
+            sentenceData[level].forEach(sentenceObj => {
+                const sentenceDiv = document.createElement('div');
+                sentenceDiv.className = 'sentence';
+                sentenceDiv.textContent = sentenceObj.base;
+                sentenceDiv.onclick = () => showTenses(sentenceObj);
+                sentenceListDiv.appendChild(sentenceDiv);
+            });
+            
+            levelDiv.appendChild(sentenceListDiv);
+            container.appendChild(levelDiv);
+        }
+
+        function showTenses(sentenceObj) {
+            const modal = document.getElementById('tenses-modal');
+            const modalSentence = document.getElementById('modal-sentence-original');
+            const tensesContent = document.getElementById('tenses-content');
+            
+            modal.style.display = 'flex';
+            modalSentence.textContent = sentenceObj.base;
+            
+            tensesContent.innerHTML = '';
+            Object.entries(sentenceObj.tenses).forEach(([tense, example]) => {
+                const tenseDiv = document.createElement('div');
+                tenseDiv.innerHTML = `<strong>${tense}:</strong> ${example}`;
+                tensesContent.appendChild(tenseDiv);
+            });
+        }
+
+        function closeTensesModal() {
+            document.getElementById('tenses-modal').style.display = 'none';
+        }
+
+        // Close modal if clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('tenses-modal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Sentence Explorer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 100%;
+            width: 100%;
+            margin: 0 auto;
+            padding: 15px;
+            line-height: 1.6;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        #level-selection {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .level-button {
+            flex: 1 1 auto;
+            min-width: 50px;
+            max-width: 100px;
+            padding: 8px 12px;
+            font-size: 16px;
+            background-color: #f4f4f4;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .level-button:hover, .level-button.active {
+            background-color: #007bff;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        #sentences-container {
+            display: none;
+        }
+        
+        .sentence-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .sentence {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            word-wrap: break-word;
+            font-size: 0.9rem;
+        }
+        
+        .sentence:hover {
+            background-color: #e0e0e0;
+        }
+        
+        #tenses-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 90%;
+            width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+        
+        .close-modal {
+            float: right;
+            cursor: pointer;
+            font-size: 24px;
+            color: #ff0000;
+        }
+        
+        #back-to-levels {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        
+        #tenses-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        #tenses-table th, #tenses-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        #tenses-table th {
+            background-color: #f2f2f2;
+        }
+        
+        @media screen and (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .level-button {
+                flex: 1 1 40%;
+                padding: 6px 10px;
+                font-size: 14px;
+            }
+            
+            .sentence-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>English Sentence Explorer</h1>
+    
+    <div id="level-selection">
+        <button class="level-button" data-level="A1">A1</button>
+        <button class="level-button" data-level="A2">A2</button>
+        <button class="level-button" data-level="B1">B1</button>
+        <button class="level-button" data-level="B2">B2</button>
+        <button class="level-button" data-level="C1">C1</button>
+        <button class="level-button" data-level="C2">C2</button>
+    </div>
+    
+    <button id="back-to-levels" style="display:none;">Back to Level Selection</button>
+    
+    <div id="sentences-container"></div>
+    
+    <div id="tenses-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeTensesModal()">×</span>
+            <h2 id="modal-sentence-original"></h2>
+            <table id="tenses-table">
+                <thead>
+                    <tr>
+                        <th>Tense</th>
+                        <th>Sentence</th>
+                    </tr>
+                </thead>
+                <tbody id="tenses-content">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const sentenceData = {
+            A1: [
+                {
+                    base: "I go to school.",
+                    tenses: {
+                        "Simple Present": "I go to school.",
+                        "Simple Past": "I went to school.",
+                        "Simple Future": "I will go to school.",
+                        "Present Continuous": "I am going to school.",
+                        "Past Continuous": "I was going to school.",
+                        "Future Continuous": "I will be going to school.",
+                        "Present Perfect": "I have gone to school.",
+                        "Past Perfect": "I had gone to school.",
+                        "Future Perfect": "I will have gone to school.",
+                        "Present Perfect Continuous": "I have been going to school.",
+                        "Past Perfect Continuous": "I had been going to school.",
+                        "Future Perfect Continuous": "I will have been going to school."
+                    }
+                },
+                {
+                    base: "I go to school.",
+                    tenses: {
+                        "Simple Present": "I go to school.",
+                        "Simple Past": "I went to school.",
+                        "Simple Future": "I will go to school.",
+                        "Present Continuous": "I am going to school.",
+                        "Past Continuous": "I was going to school.",
+                        "Future Continuous": "I will be going to school.",
+                        "Present Perfect": "I have gone to school.",
+                        "Past Perfect": "I had gone to school.",
+                        "Future Perfect": "I will have gone to school.",
+                        "Present Perfect Continuous": "I have been going to school.",
+                        "Past Perfect Continuous": "I had been going to school.",
+                        "Future Perfect Continuous": "I will have been going to school."
+                    }
+                },
+                {
+                    base: "I go to school.",
+                    tenses: {
+                        "Simple Present": "I go to school.",
+                        "Simple Past": "I went to school.",
+                        "Simple Future": "I will go to school.",
+                        "Present Continuous": "I am going to school.",
+                        "Past Continuous": "I was going to school.",
+                        "Future Continuous": "I will be going to school.",
+                        "Present Perfect": "I have gone to school.",
+                        "Past Perfect": "I had gone to school.",
+                        "Future Perfect": "I will have gone to school.",
+                        "Present Perfect Continuous": "I have been going to school.",
+                        "Past Perfect Continuous": "I had been going to school.",
+                        "Future Perfect Continuous": "I will have been going to school."
+                    }
+                },
+                {
+                    base: "I go to school.",
+                    tenses: {
+                        "Simple Present": "I go to school.",
+                        "Simple Past": "I went to school.",
+                        "Simple Future": "I will go to school.",
+                        "Present Continuous": "I am going to school.",
+                        "Past Continuous": "I was going to school.",
+                        "Future Continuous": "I will be going to school.",
+                        "Present Perfect": "I have gone to school.",
+                        "Past Perfect": "I had gone to school.",
+                        "Future Perfect": "I will have gone to school.",
+                        "Present Perfect Continuous": "I have been going to school.",
+                        "Past Perfect Continuous": "I had been going to school.",
+                        "Future Perfect Continuous": "I will have been going to school."
+                    }
+                },
+                {
+                    base: "I go to school.",
+                    tenses: {
+                        "Simple Present": "I go to school.",
+                        "Simple Past": "I went to school.",
+                        "Simple Future": "I will go to school.",
+                        "Present Continuous": "I am going to school.",
+                        "Past Continuous": "I was going to school.",
+                        "Future Continuous": "I will be going to school.",
+                        "Present Perfect": "I have gone to school.",
+                        "Past Perfect": "I had gone to school.",
+                        "Future Perfect": "I will have gone to school.",
+                        "Present Perfect Continuous": "I have been going to school.",
+                        "Past Perfect Continuous": "I had been going to school.",
+                        "Future Perfect Continuous": "I will have been going to school."
+                    }
+                },
+                {
+                    base: "I go to school.",
+                    tenses: {
+                        "Simple Present": "I go to school.",
+                        "Simple Past": "I went to school.",
+                        "Simple Future": "I will go to school.",
+                        "Present Continuous": "I am going to school.",
+                        "Past Continuous": "I was going to school.",
+                        "Future Continuous": "I will be going to school.",
+                        "Present Perfect": "I have gone to school.",
+                        "Past Perfect": "I had gone to school.",
+                        "Future Perfect": "I will have gone to school.",
+                        "Present Perfect Continuous": "I have been going to school.",
+                        "Past Perfect Continuous": "I had been going to school.",
+                        "Future Perfect Continuous": "I will have been going to school."
+                    }
+                },
+                // Add more A1 sentences
+            ],
+            A2: [
+                {
+                    base: "They study English every day.",
+                    tenses: {
+                        "Simple Present": "They study English every day.",
+                        "Simple Past": "They studied English every day.",
+                        "Simple Future": "They will study English every day.",
+                        "Present Continuous": "They are studying English today.",
+                        "Past Continuous": "They were studying English yesterday.",
+                        "Future Continuous": "They will be studying English next week.",
+                        "Present Perfect": "They have studied English for years.",
+                        "Past Perfect": "They had studied English before moving abroad.",
+                        "Future Perfect": "They will have studied English by next year.",
+                        "Present Perfect Continuous": "They have been studying English continuously.",
+                        "Past Perfect Continuous": "They had been studying English before the course.",
+                        "Future Perfect Continuous": "They will have been studying English for a decade."
+                    }
+                },
+                // Add more A2 sentences
+            ],
+            B1: [
+                {
+                    base: "We have visited Paris twice.",
+                    tenses: {
+                        "Simple Present": "We visit Paris occasionally.",
+                        "Simple Past": "We visited Paris twice.",
+                        "Simple Future": "We will visit Paris next summer.",
+                        "Present Continuous": "We are visiting Paris this week.",
+                        "Past Continuous": "We were visiting Paris when it rained.",
+                        "Future Continuous": "We will be visiting Paris during the festival.",
+                        "Present Perfect": "We have visited Paris twice.",
+                        "Past Perfect": "We had visited Paris before going to Nice.",
+                        "Future Perfect": "We will have visited Paris by next month.",
+                        "Present Perfect Continuous": "We have been visiting European cities.",
+                        "Past Perfect Continuous": "We had been visiting museums all day.",
+                        "Future Perfect Continuous": "We will have been visiting Paris for a week."
+                    }
+                },
+                // Add more B1 sentences
+            ]
+            // Add other levels
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const levelButtons = document.querySelectorAll('.level-button');
+            const sentencesContainer = document.getElementById('sentences-container');
+            const backToLevelsButton = document.getElementById('back-to-levels');
+            const tensesModal = document.getElementById('tenses-modal');
+            const modalSentenceOriginal = document.getElementById('modal-sentence-original');
+            const tensesContent = document.getElementById('tenses-content');
+
+            // Level selection event listeners
+            levelButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    levelButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    const level = button.dataset.level;
+                    showLevelSentences(level);
+                });
+            });
+
+            // Back to levels button
+            backToLevelsButton.addEventListener('click', () => {
+                sentencesContainer.style.display = 'none';
+                document.getElementById('level-selection').style.display = 'flex';
+                backToLevelsButton.style.display = 'none';
+                
+                // Remove active class from level buttons
+                levelButtons.forEach(btn => btn.classList.remove('active'));
+            });
+
+            function showLevelSentences(level) {
+                // Clear previous sentences
+                sentencesContainer.innerHTML = '';
+
+                // Hide level selection buttons
+                document.getElementById('level-selection').style.display = 'none';
+
+                // Show back to levels button
+                backToLevelsButton.style.display = 'block';
+
+                // Create sentence list container
+                const sentenceList = document.createElement('div');
+                sentenceList.classList.add('sentence-list');
+
+                // Add sentences for selected level
+                sentenceData[level].forEach(sentenceObj => {
+                    const sentenceElement = document.createElement('div');
+                    sentenceElement.classList.add('sentence');
+                    sentenceElement.textContent = sentenceObj.base;
+                    
+                    // Add click event to show tenses
+                    sentenceElement.addEventListener('click', () => {
+                        showTensesModal(sentenceObj);
+                    });
+
+                    sentenceList.appendChild(sentenceElement);
+                });
+
+                // Add sentence list to container
+                sentencesContainer.appendChild(sentenceList);
+                sentencesContainer.style.display = 'block';
+            }
+
+            function showTensesModal(sentenceObj) {
+                // Set original sentence
+                modalSentenceOriginal.textContent = sentenceObj.base;
+
+                // Clear previous tenses
+                tensesContent.innerHTML = '';
+
+                // Add tenses to table
+                Object.entries(sentenceObj.tenses).forEach(([tense, sentence]) => {
+                    const row = document.createElement('tr');
+                    
+                    const tenseCell = document.createElement('td');
+                    tenseCell.textContent = tense;
+                    
+                    const sentenceCell = document.createElement('td');
+                    sentenceCell.textContent = sentence;
+                    
+                    row.appendChild(tenseCell);
+                    row.appendChild(sentenceCell);
+                    
+                    tensesContent.appendChild(row);
+                });
+
+                // Show modal
+                tensesModal.style.display = 'flex';
+            }
+
+            function closeTensesModal() {
+                tensesModal.style.display = 'none';
+            }
+
+            // Close modal when clicking outside
+            tensesModal.addEventListener('click', (e) => {
+                if (e.target === tensesModal) {
+                    closeTensesModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
