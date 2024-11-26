@@ -1,0 +1,150 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    padding: 15px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+#level-selection {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.level-button {
+    flex: 1 1 auto;
+    min-width: 50px;
+    max-width: 100px;
+    padding: 8px 12px;
+    font-size: 16px;
+    background-color: #f4f4f4;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.level-button:hover, .level-button.active {
+    background-color: #007bff;
+    color: white;
+    transform: scale(1.05);
+}
+
+#sentences-container {
+    display: none;
+}
+
+.sentence-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.sentence {
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    word-wrap: break-word;
+    font-size: 0.9rem;
+}
+
+.sentence:hover {
+    background-color: #e0e0e0;
+}
+
+#tenses-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 90%;
+    width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+}
+
+.close-modal {
+    float: right;
+    cursor: pointer;
+    font-size: 24px;
+    color: #ff0000;
+}
+
+#back-to-levels {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+#tenses-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tenses-table th, #tenses-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#tenses-table th {
+    background-color: #f2f2f2;
+}
+
+@media screen and (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.4rem;
+    }
+    
+    .level-button {
+        flex: 1 1 40%;
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+    
+    .sentence-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+}
